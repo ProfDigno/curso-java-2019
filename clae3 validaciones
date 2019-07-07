@@ -1,0 +1,58 @@
+public class ClaValidar_guardar {
+    public boolean jtextfield_vacio(JTextField txtcampo,String mensaje){
+        //gettext=primero se obtiene el valor del campo
+        //trim=elimina todos los espacios
+        //length=cuenta la cantidad de valor del texto
+        //si es igual a cero es por que no hay ningun caracter o por estar vacio
+        if(txtcampo.getText().trim().length()==0){
+            //imprimir mensaje de error
+            JOptionPane.showMessageDialog(txtcampo,mensaje,"ERROR",JOptionPane.ERROR_MESSAGE);
+            //cambiar el color del campo por error
+            txtcampo.setBackground(Color.ORANGE);
+            //enfocar el campo por estar vacio
+            txtcampo.grabFocus();
+            //returnor como verdadero si ocurre error
+            return true;
+        }else{
+            //cambiar color a blanco se no ocurre error
+            txtcampo.setBackground(Color.WHITE);
+            //retornar como falso si esta con el campo cargado
+            return false;
+        }
+    }
+}
+
+-----------funciones-------------------
+    Connection conn=null;
+    ConnPostgres conpg=new ConnPostgres();
+    ClaValidar_guardar valg=new ClaValidar_guardar();
+    void abrir_formulario(){
+        conn=conpg.ConnectBD(false);
+        restableser_formulario();
+    }
+    void restableser_formulario(){
+        limpiar_campos();
+    }
+    void limpiar_campos(){
+        txtid.setText(null);//limpiar el campo
+        txtnombre.setText(null);
+        txtnombre.grabFocus();//enfocar para dejar el cursor en este campo
+    }
+    boolean validar_guardar(){
+        String msj_nombre="SE DEBE CARGAR EL NOMBRE";
+        if(valg.jtextfield_vacio(txtnombre,msj_nombre)){
+            return false;
+        }else{
+            
+        }
+        return true;
+    }
+    void boton_nuevo(){
+        limpiar_campos();
+    }
+    void boton_guardar(){
+        if(validar_guardar()){
+            JOptionPane.showMessageDialog(this,"GUARDADO CORRECTO");
+            restableser_formulario();
+        }
+    }
