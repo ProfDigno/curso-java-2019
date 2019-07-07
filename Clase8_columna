@@ -1,0 +1,15 @@
+    public void setAnchoTablaColumna(JTable tabla,int ancho[]){
+        if(tabla.getColumnCount()==ancho.length){
+            JViewport scroll = (JViewport) tabla.getParent();
+            int Ancho=scroll.getWidth();
+            TableColumnModel modeloColumna = tabla.getColumnModel();
+            TableColumn columnaTabla;
+            for(int valor=0;valor<tabla.getColumnCount();valor++){
+                columnaTabla = modeloColumna.getColumn(valor);
+                int anchoColumna1=(ancho[valor]*Ancho)/100;
+                columnaTabla.setPreferredWidth(anchoColumna1);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null,"EL ANCHO DE LA TABLA ES INCORRECTO","ERROR",JOptionPane.ERROR_MESSAGE);
+        }
+    }
