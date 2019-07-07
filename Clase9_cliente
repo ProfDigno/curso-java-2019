@@ -1,0 +1,55 @@
+public class FUNcombobox {
+    Connection conn=null;
+    ResultSet rs=null;
+    PreparedStatement pst=null;
+    int limite=2000;
+    String idcampo1[]=new String[limite];
+    String idcampo2[]=new String[limite];
+    String idcampo3[]=new String[limite];
+    String idcampo4[]=new String[limite];
+    String idcampo5[]=new String[limite];
+    public void cargar_combobox_sql(Connection conn,String sql,JComboBox cmb,String campomostrar,String campoid,int cant_combo){
+        DefaultComboBoxModel model=(DefaultComboBoxModel) cmb.getModel();
+        model.removeAllElements();
+        if(cant_combo<=5){
+            try {
+                pst = conn.prepareStatement(sql);
+                rs =pst.executeQuery();
+                cmb.addItem("-TODOS-");
+                int fila_campo=0;
+                while(rs.next()){
+                    if(fila_campo>limite-2){
+                        JOptionPane.showMessageDialog(null,"LIMITE DE COMBOBOX SUPERADO "+limite);
+                        break;
+                    }
+                    cmb.addItem(rs.getObject(campomostrar));
+                    fila_campo++;
+                    idcampo1[0]="0";
+                    idcampo2[0]="0";
+                    idcampo3[0]="0";
+                    idcampo4[0]="0";
+                    idcampo5[0]="0";
+                    if(cant_combo==1){
+                        idcampo1[fila_campo]=rs.getString(campoid);
+                    }
+                    if(cant_combo==2){
+                        idcampo2[fila_campo]=rs.getString(campoid);
+                    }
+                    if(cant_combo==3){
+                        idcampo3[fila_campo]=rs.getString(campoid);
+                    }
+                    if(cant_combo==4){
+                        idcampo4[fila_campo]=rs.getString(campoid);
+                    }
+                    if(cant_combo==5){
+                        idcampo5[fila_campo]=rs.getString(campoid);
+                    }
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,"OCURRIO UN ERROR AL CARGAR EL COMBOBOX");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null,"solo se puede cargar 5 combobox");
+        }
+    }
+}
