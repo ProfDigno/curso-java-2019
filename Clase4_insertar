@@ -1,0 +1,75 @@
+    public void SQL_execute(Connection conn,String sql,String consulta,boolean mensaje){
+        try {
+            PreparedStatement pst=conn.prepareStatement(sql);
+            pst.execute();
+            if(mensaje){
+                JOptionPane.showMessageDialog(null,consulta);
+            }
+            System.out.println("EXECUTE:..........................##\n"+sql);
+        } catch (Exception e) {
+            fm.mensaje_error_sql(e, sql, "SQL_execute");
+        }
+    }
+    /**
+     * FUNCION ENCARGADA DE CONSTRUIR LA SENTENCIA SQL DE INSERTAR
+     * PARA ENVIAR AL POSTGRES
+     * @param conn
+     * @param columna DE LA TABLA (SIEMPRE [0] EL PRIMERO ES EL NOMBRE DE LA TABLA)
+     * (SIEMPRE EL [1] EL SEGUNDO ES EL ID DE LA TABLA
+     * @param campo SEGUIR EL ORDEN DE LA COLUMNA NO LLEVA EL NOMBRE DE LA TABLA
+     * DONDE VAL LOS VALORES A CARGAR
+     * @param mensaje SE VERDADERO IMPRIMIR MENSAJE
+     */
+    public void InsertarSQL_vector(Connection conn,String columna[],String campo[],boolean mensaje){
+        String suma_columna="";
+        String suma_campos="";
+        //si el vector columna y campo no tiene la cantidad correcta no se ejecuta
+        if(columna.length == campo.length+1){
+            for(int c =2;c<columna.length;c++){
+                //CONSTRUYE LA COLUMNAS SEPARANDO POR COMA
+                if(c==(columna.length-1)){
+                    //ENTRA UNA SOLA VES PARA TERMINAR LA CONSTRUCCION AL FINAL
+                    suma_columna = suma_columna+(columna[c]);
+                }else{
+                    //MIENTRAS NO SEA EL ULTIMO ENTRA Y VA SEPARANDO POR COMA
+                    suma_columna = suma_columna+(columna[c]+",");
+                }
+            }
+            for(int c =1;c<campo.length;c++){
+                //CONSTRUYE LOS CAMPOS QUE SE VA CARGAR CON LOS VALORES SEPARADO POR COMA Y COMILLA SIMPLE
+                if(c==(campo.length-1)){
+                    //ENTRA UNA SOLA VES PARA TERMINAR LA CONSTRUCCION AL FINAL
+                    suma_campos = suma_campos+"'"+(campo[c]+"'");
+                }else{
+                    //MIENTRAS NO SEA EL ULTIMO ENTRA Y VA SEPARANDO POR COMA
+                    suma_campos = suma_campos+"'"+(campo[c]+"',");
+                }
+            }
+            //SENTENCIA SQL PARA INSERTAR
+            String sql_insert="INSERT INTO "+columna[0]+" (" + suma_columna +")VALUES("+suma_campos+")";
+            //MENSAJE QUE SE VA MOSTRAR
+            String consulta_insert="REGISTRO "+columna[0]+" INSERTADO CORRECTAMENTE";
+            SQL_execute(conn, sql_insert, consulta_insert, mensaje);//FUNCION QUE EJECUTA EL SQL
+        }else{
+            JOptionPane.showMessageDialog(null,"LAS COLUMNAS Y CAMPOS NO TIENEN LA MISMA CANTIDAD",
+            "ERROR",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    //#################################################################################
+        public void mensaje_error_sql(Exception e,String sql,String titulo){
+        String sumasql="";
+        for(int caracter=1;caracter<=sql.length();caracter++){
+            //recorre todo el sql del primer caracter hasta el ultimo
+            sumasql=sumasql+sql.substring((caracter-1),caracter);
+            if(caracter%150==0){
+                //por cada 150 caracter salta una linea
+                sumasql=sumasql+"\n";
+            }
+        }
+        JOptionPane.showMessageDialog(null,"Error: "+e+"\n"+sumasql,titulo,JOptionPane.ERROR_MESSAGE);
+        //imprime en consola
+        System.out.println(titulo+"--->"+e);
+        System.out.println(sumasql);
+    }
+    
